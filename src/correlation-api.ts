@@ -1,4 +1,4 @@
-export type Domain = "STORY" | "EVENT" | "PERSON" | "TEXT" | "LAW"
+export type Domain = "STORY" | "EVENT" | "PERSON" | "TEXT" | "LAW" | "PERSPECTIVE"
 export type EpistemicStatus = "SUPPORTED" | "PARTIAL" | "DISPUTED" | "UNRESOLVED" | "CONTRADICTED" | "INDETERMINATE"
 export type FreshnessState = "CURRENT" | "STALE_REVIEW_REQUIRED" | "UNAVAILABLE"
 
