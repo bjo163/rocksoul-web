@@ -97,9 +97,17 @@ function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onTo
     return () => { active = false }
   }, [])
 
+  const heroStyle = {
+    "--hero-desktop-position": assets.objectPositionDesktop,
+    "--hero-mobile-position": assets.objectPositionMobile,
+  } as CSSProperties
+  const layered = assets.mode === "layered"
+  const separateRocksoul = assets.mode !== "composite"
+
   return (
-    <section id="top" className="cinematic-hero" data-asset-source={assets.source}>
+    <section id="top" className="cinematic-hero" data-asset-source={assets.source} data-scene-mode={assets.mode} style={heroStyle}>
       <picture className="hero-master" aria-hidden="true">
+        {assets.reducedMotion ? <source media="(prefers-reduced-motion: reduce)" srcSet={assets.reducedMotion} /> : null}
         <source media="(max-width: 700px)" srcSet={assets.heroMobile} />
         <img
           src={assets.heroDesktop}
@@ -110,13 +118,15 @@ function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onTo
         />
       </picture>
 
-      {assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
-      {assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
-      {assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
-      {assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
+      {layered && assets.starfield ? <img className="hero-layer hero-starfield" src={assets.starfield} alt="" aria-hidden="true" /> : null}
+      {layered && assets.moon ? <img className="hero-layer hero-moon" src={assets.moon} alt="" aria-hidden="true" /> : null}
+      {layered && assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
+      {layered && assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
+      {layered && assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
+      {layered && assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
 
       <div className="hero-grid-overlay" aria-hidden="true" style={{ backgroundImage: `url("${assets.grid}")` }} />
-      <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" />
+      {separateRocksoul ? <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" /> : null}
       <div className="hero-grain" aria-hidden="true" style={{ backgroundImage: `url("${assets.grain}"), url("${assets.scanlines}")` }} />
 
       <div className="hero-content">
