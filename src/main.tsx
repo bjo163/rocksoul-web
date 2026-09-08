@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client"
 import { CinematicWebHero, MoonWitnessMark, ROCKSOUL_CINEMATIC_WEB_HERO_SYNC } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
 import "./styles.css"
+import { AWSApp } from "./aws-app"
 import {
   fetchCases,
   fetchEdgeProvenance,
