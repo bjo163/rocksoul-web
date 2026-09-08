@@ -7,6 +7,7 @@ import {
   Button,
   Input,
   LegalStatus,
+  MOONWITNESS_STABLE_REPOSITORY_BASE,
   MoonWitnessAssetImage,
   MoonWitnessAssetProvider,
   MoonWitnessRegistryAssetImage,
@@ -16,8 +17,7 @@ import {
 } from "@rocksoul/ui"
 import "./aws.css"
 
-const ASSET_BASE =
-  "https://raw.githubusercontent.com/bjo163/rocksoul-assets/82f20b8a361a19abdc6591fe2f4c67e3fb9d4b05/moonwitness"
+const ASSET_BASE = `${MOONWITNESS_STABLE_REPOSITORY_BASE}/moonwitness`
 
 const API_BASE = (import.meta.env.VITE_AWS_API_URL ?? "").replace(/\/+$/, "")
 
