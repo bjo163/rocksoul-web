@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
+import { StrictMode, useEffect, useMemo, useState, type CSSProperties, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import { MoonWitnessMark } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
@@ -14,7 +14,7 @@ import {
   type EpistemicStatus,
   type FreshnessReport,
 } from "./correlation-api"
-import { FALLBACK_HERO_ASSETS, loadHeroAssets, type HeroAssets } from "./hero-assets"
+import { FALLBACK_HERO_ASSETS, loadHeroAssets, preloadHeroAssets, type HeroAssets } from "./hero-assets"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
@@ -25,7 +25,7 @@ const statusLabel: Record<EpistemicStatus, string> = {
   INDETERMINATE: "Indeterminate",
 }
 
-function PublicHeader({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
+function PublicHeader({ onSearch }: { onSearch: () => void }) {
   return (
     <header className="public-header">
       <a className="wordmark" href="#top" aria-label="MoonWitness home">MOONWITNESS</a>
@@ -37,8 +37,8 @@ function PublicHeader({ theme, onToggleTheme }: { theme: "dark" | "light"; onTog
         <a href="#research">RESEARCH</a>
         <a href="#about">ABOUT</a>
       </nav>
-      <button className="icon-control" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
-        <span aria-hidden="true">{theme === "dark" ? "◐" : "◑"}</span>
+      <button className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
       </button>
       <span className="live-archive"><i aria-hidden="true" /> LIVE ARCHIVE</span>
     </header>
@@ -86,37 +86,48 @@ function ArchiveStrip({ assets }: { assets: HeroAssets }) {
   )
 }
 
-function CinematicHero() {
+function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
   const [assets, setAssets] = useState<HeroAssets>(FALLBACK_HERO_ASSETS)
 
   useEffect(() => {
     let active = true
-    void loadHeroAssets().then((next) => {
+    void loadHeroAssets().then(async (next) => {
+      await preloadHeroAssets(next)
       if (active) setAssets(next)
     })
     return () => { active = false }
   }, [])
 
+  const heroStyle = {
+    "--hero-desktop-position": assets.objectPositionDesktop,
+    "--hero-mobile-position": assets.objectPositionMobile,
+  } as CSSProperties
+  const layered = assets.mode === "layered"
+  const separateRocksoul = assets.mode !== "composite"
+
   return (
-    <section id="top" className="cinematic-hero" data-asset-source={assets.source}>
+    <section id="top" className="cinematic-hero" data-asset-source={assets.source} data-scene-mode={assets.mode} style={heroStyle}>
       <picture className="hero-master" aria-hidden="true">
+        {assets.reducedMotion ? <source media="(prefers-reduced-motion: reduce)" srcSet={assets.reducedMotion} /> : null}
         <source media="(max-width: 700px)" srcSet={assets.heroMobile} />
         <img
           src={assets.heroDesktop}
           alt=""
           loading="eager"
           fetchPriority="high"
-          style={{ objectPosition: assets.objectPositionDesktop }}
+          style={{ objectPosition: "var(--hero-desktop-position)" }}
         />
       </picture>
 
-      {assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
-      {assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
-      {assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
-      {assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
+      {layered && assets.starfield ? <img className="hero-layer hero-starfield" src={assets.starfield} alt="" aria-hidden="true" /> : null}
+      {layered && assets.moon ? <img className="hero-layer hero-moon" src={assets.moon} alt="" aria-hidden="true" /> : null}
+      {layered && assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
+      {layered && assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
+      {layered && assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
+      {layered && assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
 
       <div className="hero-grid-overlay" aria-hidden="true" style={{ backgroundImage: `url("${assets.grid}")` }} />
-      <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" />
+      {separateRocksoul ? <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" /> : null}
       <div className="hero-grain" aria-hidden="true" style={{ backgroundImage: `url("${assets.grain}"), url("${assets.scanlines}")` }} />
 
       <div className="hero-content">
@@ -160,7 +171,12 @@ function CinematicHero() {
       <footer className="hero-footer">
         <span><i /> 01 / INDEPENDENT OBSERVATORY</span>
         <span>CATALOGING THE UNEXPLAINED SINCE NOW</span>
-        <span>A MORE CURIOUS TOMORROW <b aria-hidden="true">◕◕◯</b></span>
+        <span className="hero-footer-theme">
+          A MORE CURIOUS TOMORROW
+          <button className="phase-toggle" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
+            <b aria-hidden="true">{theme === "dark" ? "◕◕◯" : "◯◕◕"}</b>
+          </button>
+        </span>
       </footer>
     </section>
   )
@@ -386,9 +402,12 @@ function App() {
 
   return (
     <div className="public-observatory">
-      <PublicHeader theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
+      <PublicHeader onSearch={() => {
+        document.getElementById("cases")?.scrollIntoView({ behavior: "smooth", block: "start" })
+        window.setTimeout(() => document.getElementById("correlation-search")?.focus(), 350)
+      }} />
       <main>
-        <CinematicHero />
+        <CinematicHero theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
         <ResearchManifesto />
         <CorrelationObservatory />
       </main>

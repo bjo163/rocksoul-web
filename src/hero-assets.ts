@@ -20,8 +20,12 @@ export interface HeroManifest {
 
 export interface HeroAssets {
   source: "manifest" | "fallback"
+  mode: "layered" | "composite" | "fallback"
   heroDesktop: string
   heroMobile: string
+  reducedMotion?: string
+  starfield?: string
+  moon?: string
   rocksoul: string
   grid: string
   grain: string
@@ -41,6 +45,7 @@ const MANIFEST_URL = `${PACK_ROOT}/manifest.json`
 
 export const FALLBACK_HERO_ASSETS: HeroAssets = {
   source: "fallback",
+  mode: "fallback",
   heroDesktop: `${RAW_ROOT}/moonwitness/cinematic-hero-pack/png/observatory-night.png`,
   heroMobile: `${RAW_ROOT}/moonwitness/cinematic-hero-pack/png/lunar-horizon.png`,
   rocksoul: `${RAW_ROOT}/moonwitness/rocksoul-character-pack/png/512/observing.png`,
@@ -134,6 +139,9 @@ export async function loadHeroAssets(): Promise<HeroAssets> {
       ["hero", "mobile"],
       ["static", "mobile"],
     ])
+    const reducedMotion = pickAny(entries, [["reduced", "motion"], ["static", "reduced"]])
+    const starfield = pickAny(entries, [["starfield", "observatory"], ["starfield"]])
+    const moon = pickAny(entries, [["moon", "photographic"], ["moon"]])
     const rocksoul = pickAny(entries, [["rocksoul", "observer"], ["rocksoul", "back"], ["rocksoul"]])
     const grid = pickAny(entries, [["observatory", "grid"], ["grid", "overlay"]])
     const grain = pickAny(entries, [["film", "grain"], ["grain", "overlay"]])
@@ -143,10 +151,16 @@ export async function loadHeroAssets(): Promise<HeroAssets> {
     const terrainForeground = pickAny(entries, [["terrain", "foreground"]])
     const terrainMidground = pickAny(entries, [["terrain", "midground"]])
 
+    const layered = Boolean(starfield && moon && rocksoul && terrainForeground)
+
     return {
       source: "manifest",
+      mode: layered ? "layered" : "composite",
       heroDesktop: toUrl(desktop?.path, FALLBACK_HERO_ASSETS.heroDesktop),
       heroMobile: toUrl(mobile?.path, FALLBACK_HERO_ASSETS.heroMobile),
+      reducedMotion: reducedMotion ? toUrl(reducedMotion.path, "") : undefined,
+      starfield: starfield ? toUrl(starfield.path, "") : undefined,
+      moon: moon ? toUrl(moon.path, "") : undefined,
       rocksoul: toUrl(rocksoul?.path, FALLBACK_HERO_ASSETS.rocksoul),
       grid: toUrl(grid?.path, FALLBACK_HERO_ASSETS.grid),
       grain: toUrl(grain?.path, FALLBACK_HERO_ASSETS.grain),
@@ -162,4 +176,24 @@ export async function loadHeroAssets(): Promise<HeroAssets> {
   } catch {
     return FALLBACK_HERO_ASSETS
   }
+}
+
+
+export async function preloadHeroAssets(assets: HeroAssets) {
+  if (typeof window === "undefined" || typeof Image === "undefined") return
+  const primary = window.matchMedia("(max-width: 700px)").matches ? assets.heroMobile : assets.heroDesktop
+  const urls = [
+    primary,
+    assets.mode === "layered" ? assets.starfield : undefined,
+    assets.mode === "layered" ? assets.moon : undefined,
+    assets.mode !== "composite" ? assets.rocksoul : undefined,
+  ].filter((value): value is string => Boolean(value))
+
+  await Promise.all(urls.map((url) => new Promise<void>((resolve) => {
+    const image = new Image()
+    image.decoding = "async"
+    image.onload = () => resolve()
+    image.onerror = () => resolve()
+    image.src = url
+  })))
 }
