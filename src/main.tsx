@@ -1,6 +1,12 @@
 import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
-import { CinematicWebHero, MoonWitnessMark, ROCKSOUL_CINEMATIC_WEB_HERO_SYNC } from "@rocksoul/ui"
+import {
+  CinematicWebHero,
+  MoonWitnessMark,
+  MoonWitnessRegistryAssetImage,
+  ResearchDomainOwnershipMap,
+  ROCKSOUL_CINEMATIC_WEB_HERO_SYNC,
+} from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
 import "./styles.css"
 import { AWSApp } from "./aws-app"
@@ -39,7 +45,7 @@ function PublicHeader({ onSearch }: { onSearch: () => void }) {
         <a href="#about">ABOUT</a>
       </nav>
       <button className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
+        <MoonWitnessRegistryAssetImage pack="product-icons" assetId="search" alt="" aria-hidden="true" />
       </button>
       <span className="live-archive"><i aria-hidden="true" /> LIVE ARCHIVE</span>
     </header>
@@ -82,6 +88,37 @@ function ResearchManifesto() {
       <div className="manifesto-copy">
         <p>MoonWitness is not built to make every trail become a conclusion. A story may align with an event. A person may remain partial. A text may preserve the motif.</p>
         <p>The public observatory keeps provenance visible, correlation explainable, legal boundaries separate, and unresolved questions visibly unresolved.</p>
+      </div>
+    </section>
+  )
+}
+
+function PublicResearchVisuals() {
+  const visuals = [
+    { pack: "graph-vector" as const, assetId: "correlation-network", label: "Reviewed correlation network" },
+    { pack: "data-viz" as const, assetId: "provenance-chain", label: "Inspectable provenance chain" },
+    { pack: "correlation-semantics" as const, assetId: "edge-unresolved", label: "Unresolved relationship semantics" },
+  ]
+
+  return (
+    <section className="public-research-visuals" aria-labelledby="visual-language-title">
+      <div className="public-research-visuals__head">
+        <div>
+          <p className="section-kicker">VISUAL LANGUAGE / SHARED CONTRACT</p>
+          <h2 id="visual-language-title">SEE THE STRUCTURE.<br />DO NOT HIDE THE UNCERTAINTY.</h2>
+        </div>
+        <p>Canonical owners, provenance paths, and unresolved edges use shared MoonWitness assets rather than page-specific illustrations.</p>
+      </div>
+      <div className="public-research-visuals__grid">
+        {visuals.map((visual) => (
+          <figure key={visual.assetId}>
+            <MoonWitnessRegistryAssetImage pack={visual.pack} assetId={visual.assetId} alt={visual.label} />
+            <figcaption>{visual.label}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <div className="public-research-domain-map">
+        <ResearchDomainOwnershipMap />
       </div>
     </section>
   )
@@ -298,6 +335,7 @@ function App() {
       <main>
         <PublicCinematicHero theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
         <ResearchManifesto />
+        <PublicResearchVisuals />
         <CorrelationObservatory />
       </main>
       <AboutFooter />

@@ -186,3 +186,8 @@ dev  ── verified promotion ──> main
 `WEB / MoonWitness × Rocksoul`
 
 </div>
+
+
+## Shared visual research grammar
+
+The Public Observatory consumes its cinematic hero, research-domain ownership map, correlation network, provenance chain, unresolved-edge semantics, and product icons from the pinned `@rocksoul/ui` contract. The web application does not carry a parallel asset revision or duplicate those renderers. The UI dependency is pinned to an immutable commit; Vite derives raw-host network hints from the shared ecosystem-link contract.

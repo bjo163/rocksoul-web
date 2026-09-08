@@ -1,8 +1,16 @@
-import { defineConfig } from "vite"
+import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
+import { ROCKSOUL_GITHUB_RAW_ORIGIN } from "@rocksoul/ui"
+
+const moonWitnessNetworkHints = (): Plugin => ({
+  name: "moonwitness-network-hints",
+  transformIndexHtml(html) {
+    return html.replaceAll("__ROCKSOUL_RAW_ORIGIN__", ROCKSOUL_GITHUB_RAW_ORIGIN)
+  },
+})
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), moonWitnessNetworkHints()],
   server: {
     port: 5173,
     proxy: {
