@@ -14,31 +14,7 @@ import {
   type EpistemicStatus,
   type FreshnessReport,
 } from "./correlation-api"
-
-const ASSET_ROOT = "https://raw.githubusercontent.com/bjo163/rocksoul-assets/main/moonwitness"
-
-const archiveFrames = [
-  {
-    label: "TRACES DON'T LIE.",
-    code: "KODAK 400TX",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/lunar-trace.svg`,
-  },
-  {
-    label: "STILL HERE.",
-    code: "36 / 36A",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/archive-texture.svg`,
-  },
-  {
-    label: "PEOPLE. PLACES. PATTERNS.",
-    code: "SOURCE / 04",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/evidence-constellation.svg`,
-  },
-  {
-    label: "A CLEARER TOMORROW.",
-    code: "CORR / 11",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/correlation-web.svg`,
-  },
-] as const
+import { FALLBACK_HERO_ASSETS, loadHeroAssets, type HeroAssets } from "./hero-assets"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
