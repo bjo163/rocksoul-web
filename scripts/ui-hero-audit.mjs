@@ -26,8 +26,10 @@ try{
   await access(path.join(root,"src","hero-assets.ts"))
   failures.push("legacy src/hero-assets.ts still exists")
 }catch{}
-if(pkg.dependencies?.["@rocksoul/ui"]!=="github:bjo163/rocksoul-ui#main") failures.push("@rocksoul/ui main dependency")
+if(!/^github:bjo163\/rocksoul-ui#[0-9a-f]{40}$/.test(pkg.dependencies?.["@rocksoul/ui"] ?? "")) failures.push("@rocksoul/ui immutable dependency")
 if(!readme.includes("public hero is **owned by `@rocksoul/ui`**")) failures.push("README ownership contract")
+if(!main.includes("PublicResearchVisuals") || !main.includes("ResearchDomainOwnershipMap")) failures.push("shared public research visual grammar")
+for(const visual of ["correlation-network","provenance-chain","edge-unresolved"]) if(!main.includes(`assetId="${visual}"`)) failures.push("shared research visual " + visual)
 
 if(failures.length){
   console.error("UI hero ownership audit failed:")

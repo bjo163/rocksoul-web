@@ -12,7 +12,7 @@
     "audit:aws-surface": "node scripts/aws-surface-audit.mjs"
   },
   "dependencies": {
-    "@rocksoul/ui": "github:bjo163/rocksoul-ui#main",
+    "@rocksoul/ui": "github:bjo163/rocksoul-ui#6a98ce0d5f5be60d4744f073837cd754639ea044",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
