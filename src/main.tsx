@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
+import { StrictMode, useEffect, useMemo, useState, type CSSProperties, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import { MoonWitnessMark } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
@@ -25,7 +25,7 @@ const statusLabel: Record<EpistemicStatus, string> = {
   INDETERMINATE: "Indeterminate",
 }
 
-function PublicHeader({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
+function PublicHeader({ onSearch }: { onSearch: () => void }) {
   return (
     <header className="public-header">
       <a className="wordmark" href="#top" aria-label="MoonWitness home">MOONWITNESS</a>
@@ -37,8 +37,8 @@ function PublicHeader({ theme, onToggleTheme }: { theme: "dark" | "light"; onTog
         <a href="#research">RESEARCH</a>
         <a href="#about">ABOUT</a>
       </nav>
-      <button className="icon-control" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
-        <span aria-hidden="true">{theme === "dark" ? "◐" : "◑"}</span>
+      <button className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="m16 16 4 4" /></svg>
       </button>
       <span className="live-archive"><i aria-hidden="true" /> LIVE ARCHIVE</span>
     </header>
@@ -86,7 +86,7 @@ function ArchiveStrip({ assets }: { assets: HeroAssets }) {
   )
 }
 
-function CinematicHero() {
+function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
   const [assets, setAssets] = useState<HeroAssets>(FALLBACK_HERO_ASSETS)
 
   useEffect(() => {
@@ -106,7 +106,7 @@ function CinematicHero() {
           alt=""
           loading="eager"
           fetchPriority="high"
-          style={{ objectPosition: assets.objectPositionDesktop }}
+          style={{ objectPosition: "var(--hero-desktop-position)" }}
         />
       </picture>
 
@@ -160,7 +160,12 @@ function CinematicHero() {
       <footer className="hero-footer">
         <span><i /> 01 / INDEPENDENT OBSERVATORY</span>
         <span>CATALOGING THE UNEXPLAINED SINCE NOW</span>
-        <span>A MORE CURIOUS TOMORROW <b aria-hidden="true">◕◕◯</b></span>
+        <span className="hero-footer-theme">
+          A MORE CURIOUS TOMORROW
+          <button className="phase-toggle" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
+            <b aria-hidden="true">{theme === "dark" ? "◕◕◯" : "◯◕◕"}</b>
+          </button>
+        </span>
       </footer>
     </section>
   )
@@ -386,9 +391,12 @@ function App() {
 
   return (
     <div className="public-observatory">
-      <PublicHeader theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
+      <PublicHeader onSearch={() => {
+        document.getElementById("cases")?.scrollIntoView({ behavior: "smooth", block: "start" })
+        window.setTimeout(() => document.getElementById("correlation-search")?.focus(), 350)
+      }} />
       <main>
-        <CinematicHero />
+        <CinematicHero theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
         <ResearchManifesto />
         <CorrelationObservatory />
       </main>
