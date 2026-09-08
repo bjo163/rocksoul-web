@@ -11,6 +11,7 @@ import {
   MoonWitnessAssetImage,
   MoonWitnessAssetProvider,
   MoonWitnessRegistryAssetImage,
+  ResearchDomainOwnershipMap,
   SourceBlock,
   type AppResource,
   type BackendState,
@@ -84,6 +85,14 @@ const notifications = [
     variant: "system" as const,
   },
 ]
+
+const legalResultVocabulary = ["Permitted", "Restricted", "Prohibited", "Disputed", "Unresolved"] as const
+const applicabilityAxes = ["Temporal", "Territorial", "Personal", "Subject-matter"] as const
+const automaticVerdictPaths = [] as const
+
+function metricCount(items: readonly unknown[]) {
+  return String(items.length).padStart(2, "0")
+}
 
 const apiRoutes = [
   ["GET", "/api/v1/aws/cases/:id", "Authenticated"],
@@ -182,22 +191,22 @@ function Overview() {
         <div className="aws-grid aws-grid-4 aws-stats">
           <div className="aws-stat">
             <span className="aws-stat-label">Legal result vocabulary</span>
-            <strong>05</strong>
-            <p>Permitted · Restricted · Prohibited · Disputed · Unresolved</p>
+            <strong>{metricCount(legalResultVocabulary)}</strong>
+            <p>{legalResultVocabulary.join(" · ")}</p>
           </div>
           <div className="aws-stat">
             <span className="aws-stat-label">Applicability axes</span>
-            <strong>04</strong>
-            <p>Temporal · Territorial · Personal · Subject-matter scope</p>
+            <strong>{metricCount(applicabilityAxes)}</strong>
+            <p>{applicabilityAxes.join(" · ")} scope</p>
           </div>
           <div className="aws-stat">
             <span className="aws-stat-label">Native AWS operations</span>
-            <strong>09</strong>
+            <strong>{metricCount(apiRoutes)}</strong>
             <p>Case, graph, history, sources, research, observability and re-analysis</p>
           </div>
           <div className="aws-stat">
             <span className="aws-stat-label">Auto verdict paths</span>
-            <strong>00</strong>
+            <strong>{metricCount(automaticVerdictPaths)}</strong>
             <p>Research may automate discovery; canonical legal conclusions still require review.</p>
           </div>
         </div>
@@ -230,7 +239,21 @@ function Overview() {
         <section className="aws-section">
           <div className="aws-section-head">
             <div>
-              <p className="aws-section-kicker">02 / MACHINE CONTRACT</p>
+              <p className="aws-section-kicker">02 / RESEARCH DOMAIN OWNERSHIP</p>
+              <h2>Six domains. One reviewed relationship layer.</h2>
+            </div>
+            <p>
+              STORY, EVENT, PERSON, TEXT, LAW and PERSPECTIVE keep their canonical repository
+              ownership. Correlation visualizes reviewed relationships without collapsing source identity.
+            </p>
+          </div>
+          <ResearchDomainOwnershipMap />
+        </section>
+
+        <section className="aws-section">
+          <div className="aws-section-head">
+            <div>
+              <p className="aws-section-kicker">03 / MACHINE CONTRACT</p>
               <h2>API surface stays inspectable.</h2>
             </div>
             <p>
