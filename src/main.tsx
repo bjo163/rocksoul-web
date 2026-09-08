@@ -14,31 +14,7 @@ import {
   type EpistemicStatus,
   type FreshnessReport,
 } from "./correlation-api"
-
-const ASSET_ROOT = "https://raw.githubusercontent.com/bjo163/rocksoul-assets/main/moonwitness"
-
-const archiveFrames = [
-  {
-    label: "TRACES DON'T LIE.",
-    code: "KODAK 400TX",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/lunar-trace.svg`,
-  },
-  {
-    label: "STILL HERE.",
-    code: "36 / 36A",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/archive-texture.svg`,
-  },
-  {
-    label: "PEOPLE. PLACES. PATTERNS.",
-    code: "SOURCE / 04",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/evidence-constellation.svg`,
-  },
-  {
-    label: "A CLEARER TOMORROW.",
-    code: "CORR / 11",
-    asset: `${ASSET_ROOT}/hero-backgrounds/svg/correlation-web.svg`,
-  },
-] as const
+import { FALLBACK_HERO_ASSETS, loadHeroAssets, type HeroAssets } from "./hero-assets"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
@@ -96,10 +72,10 @@ function EvidenceMap() {
   )
 }
 
-function ArchiveStrip() {
+function ArchiveStrip({ assets }: { assets: HeroAssets }) {
   return (
     <section id="archive" className="archive-strip" aria-label="Archive contact sheet">
-      {archiveFrames.map((frame) => (
+      {assets.archive.map((frame) => (
         <article className="archive-frame" key={frame.code}>
           <img src={frame.asset} alt="" aria-hidden="true" loading="eager" />
           <span className="archive-caption">{frame.label}</span>
@@ -111,19 +87,37 @@ function ArchiveStrip() {
 }
 
 function CinematicHero() {
+  const [assets, setAssets] = useState<HeroAssets>(FALLBACK_HERO_ASSETS)
+
+  useEffect(() => {
+    let active = true
+    void loadHeroAssets().then((next) => {
+      if (active) setAssets(next)
+    })
+    return () => { active = false }
+  }, [])
+
   return (
-    <section id="top" className="cinematic-hero">
-      <div className="hero-art" aria-hidden="true" />
-      <div className="hero-grid-overlay" aria-hidden="true" />
-      <div className="moon-disc" aria-hidden="true" />
-      <div className="mountain-range" aria-hidden="true" />
-      <div className="rocksoul-figure" aria-hidden="true">
-        <i className="hood" />
-        <i className="body" />
-        <i className="pack"><span /><span /><span /></i>
-        <i className="leg leg-left" />
-        <i className="leg leg-right" />
-      </div>
+    <section id="top" className="cinematic-hero" data-asset-source={assets.source}>
+      <picture className="hero-master" aria-hidden="true">
+        <source media="(max-width: 700px)" srcSet={assets.heroMobile} />
+        <img
+          src={assets.heroDesktop}
+          alt=""
+          loading="eager"
+          fetchPriority="high"
+          style={{ objectPosition: assets.objectPositionDesktop }}
+        />
+      </picture>
+
+      {assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
+      {assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
+      {assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
+      {assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
+
+      <div className="hero-grid-overlay" aria-hidden="true" style={{ backgroundImage: `url("${assets.grid}")` }} />
+      <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" />
+      <div className="hero-grain" aria-hidden="true" style={{ backgroundImage: `url("${assets.grain}"), url("${assets.scanlines}")` }} />
 
       <div className="hero-content">
         <div className="hero-kicker">
@@ -132,7 +126,7 @@ function CinematicHero() {
           PERSISTENT TRACES.<br />
           A WIDER TOMORROW.
         </div>
-        <h1>WHERE MYTH<br />FADES TO LEGEND</h1>
+        <h1><span>WHERE MYTH</span><span>FADES TO LEGEND</span></h1>
         <div className="hero-copy">
           <p>Some stories sound impossible.<br />Some sound way too familiar.<br />The weird part? Sometimes the traces keep coming back.</p>
           <p>MoonWitness follows what remains.<br />No hype. No forced conclusion.<br />Just records, connections, and whatever survives the cross-check.</p>
@@ -161,7 +155,7 @@ function CinematicHero() {
         MORE TO SEE.
       </aside>
 
-      <ArchiveStrip />
+      <ArchiveStrip assets={assets} />
 
       <footer className="hero-footer">
         <span><i /> 01 / INDEPENDENT OBSERVATORY</span>

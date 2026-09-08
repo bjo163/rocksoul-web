@@ -62,6 +62,35 @@ AUTHENTICATED / UTILITARIAN
 
 The public hero is assembled from responsive layers. It is **not** a screenshot pasted into the application. Canonical visual assets remain sourced from `rocksoul-assets`; shared tokens and base UI behavior come from `@rocksoul/ui`.
 
+## Cinematic hero delivery handshake
+
+`rocksoul-web` now has a runtime adapter for the upcoming asset-team delivery pack:
+
+```text
+rocksoul-assets/
+└── moonwitness/cinematic-web-hero/
+    └── manifest.json
+              ↓
+rocksoul-web/src/hero-assets.ts
+              ↓
+responsive hero layers
+```
+
+The web app attempts to load the manifest directly from `rocksoul-assets/main`. If the pack is not present yet, it falls back to the existing public cinematic/background/character assets. This means the final asset delivery can be merged into `rocksoul-assets` without another frontend architecture rewrite.
+
+Recognized roles include desktop/mobile hero masters, Rocksoul observer, foreground/midground terrain, fog layers, observatory grid, film grain, scanlines, and archive/contact-sheet thumbnails.
+
+The hero remains HTML/SVG driven for navigation, headline, CTA, evidence graph, coordinates, and accessibility. Asset-team images own cinematic environment and texture only.
+
+## Public correlation fallback
+
+Production prefers `VITE_CORRELATION_API_URL` or the same-origin correlation API. When that runtime is unavailable, the public web now falls back conservatively to the reviewed corpus on `rocksoul-correlation/main`.
+
+- reviewed cases remain browsable;
+- graph edges retain support, counterevidence, alternatives, confidence and epistemic status;
+- provenance still links to canonical owner repositories;
+- live owner-head freshness is **not fabricated**: the fallback explicitly reports those checks as unavailable until the runtime API is connected.
+
 ## Visual contract
 
 - MoonWitness is the product umbrella.
