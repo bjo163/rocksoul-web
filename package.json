@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
-    "ci": "npm run typecheck && npm run build"
+    "ci": "npm run audit:ui-hero && npm run typecheck && npm run build",
+    "audit:ui-hero": "node scripts/ui-hero-audit.mjs"
   },
   "dependencies": {
     "@rocksoul/ui": "github:bjo163/rocksoul-ui#main",

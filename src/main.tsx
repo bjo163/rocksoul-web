@@ -1,6 +1,6 @@
-import { StrictMode, useEffect, useMemo, useState, type CSSProperties, type FormEvent } from "react"
+import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
-import { MoonWitnessMark } from "@rocksoul/ui"
+import { CinematicWebHero, MoonWitnessMark } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
 import "./styles.css"
 import {
@@ -14,7 +14,6 @@ import {
   type EpistemicStatus,
   type FreshnessReport,
 } from "./correlation-api"
-import { FALLBACK_HERO_ASSETS, loadHeroAssets, preloadHeroAssets, type HeroAssets } from "./hero-assets"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
@@ -45,140 +44,28 @@ function PublicHeader({ onSearch }: { onSearch: () => void }) {
   )
 }
 
-function EvidenceMap() {
+function PublicCinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
   return (
-    <aside className="hero-evidence" aria-label="MoonWitness evidence domains">
-      <p className="hero-note hero-note-sky">SAME SKY.<br />DIFFERENT<br />QUESTIONS.</p>
-      <div className="evidence-map" aria-hidden="true">
-        <svg viewBox="0 0 360 360" role="presentation">
-          <path d="M180 55 60 180 180 305 300 180Z" />
-          <path d="M180 55V305M60 180H300" />
-          <circle cx="180" cy="180" r="5" />
-        </svg>
-        <span className="map-node story"><b>▤</b>STORY</span>
-        <span className="map-node person"><b>♙</b>PERSON</span>
-        <span className="map-node event"><b>✳</b>EVENT</span>
-        <span className="map-node rgbl"><b>↗</b>RGBL</span>
-      </div>
-      <ul className="sr-only">
-        <li>Story records</li>
-        <li>Person records</li>
-        <li>Event records</li>
-        <li>RGBL text records</li>
-      </ul>
-      <p className="hero-note hero-note-evidence">EVIDENCE<br />CONNECTS<br />WORLDS.</p>
-      <p className="hero-note hero-note-traces">TRACES CONNECT.<br />PEOPLE. PLACES.<br />PATTERNS REPEAT.</p>
-    </aside>
-  )
-}
-
-function ArchiveStrip({ assets }: { assets: HeroAssets }) {
-  return (
-    <section id="archive" className="archive-strip" aria-label="Archive contact sheet">
-      {assets.archive.map((frame) => (
-        <article className="archive-frame" key={frame.code}>
-          <img src={frame.asset} alt="" aria-hidden="true" loading="eager" />
-          <span className="archive-caption">{frame.label}</span>
-          <small>{frame.code}</small>
-        </article>
-      ))}
-    </section>
-  )
-}
-
-function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onToggleTheme: () => void }) {
-  const [assets, setAssets] = useState<HeroAssets>(FALLBACK_HERO_ASSETS)
-
-  useEffect(() => {
-    let active = true
-    void loadHeroAssets().then(async (next) => {
-      await preloadHeroAssets(next)
-      if (active) setAssets(next)
-    })
-    return () => { active = false }
-  }, [])
-
-  const heroStyle = {
-    "--hero-desktop-position": assets.objectPositionDesktop,
-    "--hero-mobile-position": assets.objectPositionMobile,
-  } as CSSProperties
-  const layered = assets.mode === "layered"
-  const separateRocksoul = assets.mode !== "composite"
-
-  return (
-    <section id="top" className="cinematic-hero" data-asset-source={assets.source} data-scene-mode={assets.mode} style={heroStyle}>
-      <picture className="hero-master" aria-hidden="true">
-        {assets.reducedMotion ? <source media="(prefers-reduced-motion: reduce)" srcSet={assets.reducedMotion} /> : null}
-        <source media="(max-width: 700px)" srcSet={assets.heroMobile} />
-        <img
-          src={assets.heroDesktop}
-          alt=""
-          loading="eager"
-          fetchPriority="high"
-          style={{ objectPosition: "var(--hero-desktop-position)" }}
-        />
-      </picture>
-
-      {layered && assets.starfield ? <img className="hero-layer hero-starfield" src={assets.starfield} alt="" aria-hidden="true" /> : null}
-      {layered && assets.moon ? <img className="hero-layer hero-moon" src={assets.moon} alt="" aria-hidden="true" /> : null}
-      {layered && assets.terrainMidground ? <img className="hero-layer terrain-midground" src={assets.terrainMidground} alt="" aria-hidden="true" /> : null}
-      {layered && assets.terrainForeground ? <img className="hero-layer terrain-foreground" src={assets.terrainForeground} alt="" aria-hidden="true" /> : null}
-      {layered && assets.fog1 ? <img className="hero-layer fog fog-1" src={assets.fog1} alt="" aria-hidden="true" /> : null}
-      {layered && assets.fog2 ? <img className="hero-layer fog fog-2" src={assets.fog2} alt="" aria-hidden="true" /> : null}
-
-      <div className="hero-grid-overlay" aria-hidden="true" style={{ backgroundImage: `url("${assets.grid}")` }} />
-      {separateRocksoul ? <img className="hero-rocksoul" src={assets.rocksoul} alt="" aria-hidden="true" /> : null}
-      <div className="hero-grain" aria-hidden="true" style={{ backgroundImage: `url("${assets.grain}"), url("${assets.scanlines}")` }} />
-
-      <div className="hero-content">
-        <div className="hero-kicker">
-          <span />
-          REAL STORIES.<br />
-          PERSISTENT TRACES.<br />
-          A WIDER TOMORROW.
-        </div>
-        <h1><span>WHERE MYTH</span><span>FADES TO LEGEND</span></h1>
-        <div className="hero-copy">
-          <p>Some stories sound impossible.<br />Some sound way too familiar.<br />The weird part? Sometimes the traces keep coming back.</p>
-          <p>MoonWitness follows what remains.<br />No hype. No forced conclusion.<br />Just records, connections, and whatever survives the cross-check.</p>
-        </div>
-        <div className="hero-actions">
-          <a className="case-cta" href="#cases">ENTER THE CASE <span aria-hidden="true">→</span></a>
-          <span className="case-index">MW / ARCHIVE / CASE 0001 — ∞</span>
-        </div>
-      </div>
-
-      <EvidenceMap />
-
-      <aside className="witness-caption">
-        <span />
-        <strong>ROCKSOUL —</strong>
-        THE WITNESS IN MOTION
-        <hr />
-        SOMEWHERE<br />BETWEEN HERE<br />AND ELSEWHERE.
-      </aside>
-
-      <aside className="coordinates">
-        35.6762° N<br />
-        139.6503° E
-        <hr />
-        SAME PLANET.<br />
-        MORE TO SEE.
-      </aside>
-
-      <ArchiveStrip assets={assets} />
-
-      <footer className="hero-footer">
-        <span><i /> 01 / INDEPENDENT OBSERVATORY</span>
-        <span>CATALOGING THE UNEXPLAINED SINCE NOW</span>
-        <span className="hero-footer-theme">
-          A MORE CURIOUS TOMORROW
-          <button className="phase-toggle" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}>
-            <b aria-hidden="true">{theme === "dark" ? "◕◕◯" : "◯◕◕"}</b>
-          </button>
-        </span>
-      </footer>
-    </section>
+    <CinematicWebHero
+      id="top"
+      archiveId="archive"
+      action={
+        <a className="mw-cinematic-web-hero__cta" href="#cases">
+          ENTER THE CASE <span aria-hidden="true">→</span>
+        </a>
+      }
+      footerRight={<>A MORE CURIOUS TOMORROW</>}
+      footerMark={
+        <button
+          className="phase-toggle"
+          type="button"
+          onClick={onToggleTheme}
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+        >
+          <b aria-hidden="true">{theme === "dark" ? "◕◕◯" : "◯◕◕"}</b>
+        </button>
+      }
+    />
   )
 }
 
@@ -407,7 +294,7 @@ function App() {
         window.setTimeout(() => document.getElementById("correlation-search")?.focus(), 350)
       }} />
       <main>
-        <CinematicHero theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
+        <PublicCinematicHero theme={theme} onToggleTheme={() => setTheme((value) => value === "dark" ? "light" : "dark")} />
         <ResearchManifesto />
         <CorrelationObservatory />
       </main>

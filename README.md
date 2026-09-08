@@ -45,10 +45,11 @@ The landing experience is intentionally different from the authenticated applica
 PUBLIC / CINEMATIC
 ├── MoonWitness archive header
 ├── WHERE MYTH FADES TO LEGEND hero
-├── layered lunar / grid / terrain composition
-├── Rocksoul — the witness in motion
-├── STORY / PERSON / EVENT / RGBL relationship map
-├── archive contact sheet
+├── @rocksoul/ui CinematicWebHero
+│   ├── responsive photographic desktop/mobile masters
+│   ├── Rocksoul — the witness in motion
+│   ├── STORY / PERSON / EVENT / RGBL relationship map
+│   └── archive contact sheet
 ├── research manifesto
 └── live correlation workbench
     ├── reviewed case search
@@ -60,27 +61,24 @@ AUTHENTICATED / UTILITARIAN
 └── @rocksoul/ui ApplicationShell
 ```
 
-The public hero is assembled from responsive layers. It is **not** a screenshot pasted into the application. Canonical visual assets remain sourced from `rocksoul-assets`; shared tokens and base UI behavior come from `@rocksoul/ui`.
+The public hero is **owned by `@rocksoul/ui`** and consumed here as `CinematicWebHero`. `rocksoul-web` no longer maintains a parallel hero renderer or asset loader.
 
 ## Cinematic hero delivery handshake
 
-`rocksoul-web` now has a runtime adapter for the upcoming asset-team delivery pack:
-
 ```text
-rocksoul-assets/
-└── moonwitness/cinematic-web-hero/
-    └── manifest.json
+rocksoul-assets/main
+└── moonwitness/cinematic-web-hero/manifest.json
               ↓
-rocksoul-web/src/hero-assets.ts
+@rocksoul/ui
+└── CinematicWebHero
               ↓
-responsive hero layers
+rocksoul-web
+└── consumer composition only
 ```
 
-The web app attempts to load the manifest directly from `rocksoul-assets/main`. If the pack is not present yet, it falls back to the existing public cinematic/background/character assets. This means the final asset delivery can be merged into `rocksoul-assets` without another frontend architecture rewrite.
+The asset repository owns cinematic masters, grid, grain, scanlines, and contact-sheet sources. The UI package owns responsive composition, evidence semantics, archive presentation, accessibility, and reduced-motion behavior. The web application only supplies public navigation targets and the theme control.
 
-Recognized roles include desktop/mobile hero masters, Rocksoul observer, foreground/midground terrain, fog layers, observatory grid, film grain, scanlines, and archive/contact-sheet thumbnails.
-
-The hero remains HTML/SVG driven for navigation, headline, CTA, evidence graph, coordinates, and accessibility. Asset-team images own cinematic environment and texture only.
+Headline, CTA, evidence graph, coordinates, labels, and correlation/causation language remain live HTML/SVG rather than baked into a screenshot.
 
 ## Public correlation fallback
 
