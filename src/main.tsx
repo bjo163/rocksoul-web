@@ -34,6 +34,7 @@ function PublicHeader({ onSearch }: { onSearch: () => void }) {
         <a href="#archive">ARCHIVE</a>
         <a href="#cases">CASES</a>
         <a href="#research">RESEARCH</a>
+        <a href="/aws">LAW / AWS</a>
         <a href="#about">ABOUT</a>
       </nav>
       <button className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
@@ -303,4 +304,9 @@ function App() {
   )
 }
 
-createRoot(document.getElementById("root")!).render(<StrictMode><App /></StrictMode>)
+const isAwsSurface = window.location.pathname === "/aws" || window.location.pathname.startsWith("/aws/")
+if (isAwsSurface) document.documentElement.classList.add("aws-surface")
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>{isAwsSurface ? <AWSApp /> : <App />}</StrictMode>,
+)
