@@ -2,5 +2,15 @@
   "framework": "vite",
   "installCommand": "npm install --global npm@11.6.0 && npm install --no-audit --no-fund",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/aws",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/aws/:path*",
+      "destination": "/index.html"
+    }
+  ]
 }
