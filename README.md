@@ -35,6 +35,7 @@ flowchart LR
     C --> P["PERSON"]
     C --> T["TEXT"]
     C --> L["LAW"]
+    C --> J["PERSPECTIVE"]
 ```
 
 ## Current public experience
@@ -48,7 +49,7 @@ PUBLIC / CINEMATIC
 ├── @rocksoul/ui CinematicWebHero
 │   ├── responsive photographic desktop/mobile masters
 │   ├── Rocksoul — the witness in motion
-│   ├── STORY / PERSON / EVENT / RGBL relationship map
+│   ├── STORY / PERSON / EVENT / TEXT / LAW / PERSPECTIVE relationship map
 │   └── archive contact sheet
 ├── research manifesto
 └── live correlation workbench
@@ -79,6 +80,28 @@ rocksoul-web
 The asset repository owns cinematic masters, grid, grain, scanlines, and contact-sheet sources. The UI package owns responsive composition, evidence semantics, archive presentation, accessibility, and reduced-motion behavior. The web application only supplies public navigation targets and the theme control.
 
 Headline, CTA, evidence graph, coordinates, labels, and correlation/causation language remain live HTML/SVG rather than baked into a screenshot.
+
+## AWS legal surface
+
+The bounded legal-intelligence surface lives at `/aws` in this web owner while canonical LAW records, query services, provenance, research operations, and authorization remain owned by `rocksoul-aws`.
+
+```text
+rocksoul-assets/main
+        ↓ pinned by
+@rocksoul/ui
+        ↓ components + asset revision
+rocksoul-web /aws
+        ↓ authenticated API
+rocksoul-aws
+```
+
+The web surface consumes `MOONWITNESS_STABLE_REPOSITORY_BASE` from `@rocksoul/ui`; it must not duplicate a raw `rocksoul-assets` commit SHA. Live legal data is enabled with:
+
+```bash
+VITE_AWS_API_URL=https://your-aws-api-host
+```
+
+Without that runtime configuration the UI remains explicitly degraded and does not fabricate legal records, observability state, or verdicts.
 
 ## Public correlation fallback
 
@@ -158,7 +181,7 @@ dev  ── verified promotion ──> main
 
 ## **REAL STORIES · PERSISTENT TRACES · A WIDER TOMORROW**
 
-### **STORY · EVENT · PERSON · TEXT · LAW**
+### **STORY · EVENT · PERSON · TEXT · LAW · PERSPECTIVE**
 
 `WEB / MoonWitness × Rocksoul`
 
