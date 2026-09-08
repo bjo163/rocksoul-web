@@ -177,3 +177,23 @@ export async function loadHeroAssets(): Promise<HeroAssets> {
     return FALLBACK_HERO_ASSETS
   }
 }
+
+
+export async function preloadHeroAssets(assets: HeroAssets) {
+  if (typeof window === "undefined" || typeof Image === "undefined") return
+  const primary = window.matchMedia("(max-width: 700px)").matches ? assets.heroMobile : assets.heroDesktop
+  const urls = [
+    primary,
+    assets.mode === "layered" ? assets.starfield : undefined,
+    assets.mode === "layered" ? assets.moon : undefined,
+    assets.mode !== "composite" ? assets.rocksoul : undefined,
+  ].filter((value): value is string => Boolean(value))
+
+  await Promise.all(urls.map((url) => new Promise<void>((resolve) => {
+    const image = new Image()
+    image.decoding = "async"
+    image.onload = () => resolve()
+    image.onerror = () => resolve()
+    image.src = url
+  })))
+}
