@@ -14,7 +14,7 @@ import {
   type EpistemicStatus,
   type FreshnessReport,
 } from "./correlation-api"
-import { FALLBACK_HERO_ASSETS, loadHeroAssets, type HeroAssets } from "./hero-assets"
+import { FALLBACK_HERO_ASSETS, loadHeroAssets, preloadHeroAssets, type HeroAssets } from "./hero-assets"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
@@ -91,7 +91,8 @@ function CinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"; onTo
 
   useEffect(() => {
     let active = true
-    void loadHeroAssets().then((next) => {
+    void loadHeroAssets().then(async (next) => {
+      await preloadHeroAssets(next)
       if (active) setAssets(next)
     })
     return () => { active = false }
