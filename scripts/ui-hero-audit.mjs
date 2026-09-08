@@ -11,7 +11,9 @@ const [main,readme,pkgRaw,styles]=await Promise.all([
 const pkg=JSON.parse(pkgRaw)
 const failures=[]
 
-if(!main.includes('CinematicWebHero, MoonWitnessMark, ROCKSOUL_CINEMATIC_WEB_HERO_SYNC')) failures.push("CinematicWebHero + sync import")
+for(const symbol of ["CinematicWebHero","MoonWitnessMark","ROCKSOUL_CINEMATIC_WEB_HERO_SYNC","MoonWitnessRegistryAssetImage","ResearchDomainOwnershipMap"]){
+  if(!main.includes(symbol)) failures.push("shared UI symbol " + symbol)
+}
 if(!main.includes('<CinematicWebHero')) failures.push("CinematicWebHero consumption")
 if(!main.includes('id="top"')) failures.push("top anchor")
 if(!main.includes('archiveId="archive"')) failures.push("archive anchor")
@@ -29,7 +31,9 @@ try{
 if(!/^github:bjo163\/rocksoul-ui#[0-9a-f]{40}$/.test(pkg.dependencies?.["@rocksoul/ui"] ?? "")) failures.push("@rocksoul/ui immutable dependency")
 if(!readme.includes("public hero is **owned by `@rocksoul/ui`**")) failures.push("README ownership contract")
 if(!main.includes("PublicResearchVisuals") || !main.includes("ResearchDomainOwnershipMap")) failures.push("shared public research visual grammar")
-for(const visual of ["correlation-network","provenance-chain","edge-unresolved"]) if(!main.includes(`assetId="${visual}"`)) failures.push("shared research visual " + visual)
+for(const visual of ["correlation-network","provenance-chain","edge-unresolved"]) {
+  if(!main.includes(`assetId: "${visual}"`) && !main.includes(`assetId="${visual}"`)) failures.push("shared research visual " + visual)
+}
 
 if(failures.length){
   console.error("UI hero ownership audit failed:")
