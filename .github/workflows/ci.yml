@@ -1,8 +1,8 @@
-name: CI
+name: WEB CI
 
 on:
   push:
-    branches: [dev, main]
+    branches: [main, dev]
   pull_request:
     branches: [main]
 
@@ -17,5 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
+      - run: npm install --global npm@11.6.0
+      - run: npm install --no-audit --no-fund
       - run: npm run ci
