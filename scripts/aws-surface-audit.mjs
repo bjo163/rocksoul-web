@@ -18,6 +18,7 @@ for (const symbol of [
   "LegalStatus",
   "MoonWitnessAssetProvider",
   "MOONWITNESS_STABLE_REPOSITORY_BASE",
+  "ResearchDomainOwnershipMap",
 ]) {
   if (!aws.includes(symbol)) failures.push(`missing @rocksoul/ui ownership symbol: ${symbol}`)
 }
@@ -25,6 +26,11 @@ for (const symbol of [
 if (aws.includes("raw.githubusercontent.com/bjo163/rocksoul-assets/")) {
   failures.push("AWS surface must not duplicate a rocksoul-assets revision outside @rocksoul/ui")
 }
+
+for (const proof of ["legalResultVocabulary", "applicabilityAxes", "automaticVerdictPaths", "metricCount(apiRoutes)"]) {
+  if (!aws.includes(proof)) failures.push(`derived AWS metric contract: ${proof}`)
+}
+if (/<strong>0\d<\/strong>/.test(aws)) failures.push("AWS overview metric counts must be derived, not literal")
 
 if (!aws.includes("VITE_AWS_API_URL")) failures.push("VITE_AWS_API_URL runtime boundary")
 if (!aws.includes('credentials: "include"')) failures.push("authenticated AWS API credentials boundary")
