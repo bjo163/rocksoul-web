@@ -50,7 +50,7 @@ export interface NodeProvenance {
 }
 
 export interface EdgeProvenance {
-  edge: GraphEdge & Record<string, unknown>
+  edge: GraphEdge
   source: NodeProvenance
   target: NodeProvenance
 }
