@@ -1,6 +1,6 @@
 import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
-import { CinematicWebHero, MoonWitnessMark } from "@rocksoul/ui"
+import { CinematicWebHero, MoonWitnessMark, ROCKSOUL_CINEMATIC_WEB_HERO_SYNC } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
 import "./styles.css"
 import {
@@ -288,7 +288,7 @@ function App() {
   }, [theme])
 
   return (
-    <div className="public-observatory">
+    <div className="public-observatory" data-hero-assets-commit={ROCKSOUL_CINEMATIC_WEB_HERO_SYNC.commit}>
       <PublicHeader onSearch={() => {
         document.getElementById("cases")?.scrollIntoView({ behavior: "smooth", block: "start" })
         window.setTimeout(() => document.getElementById("correlation-search")?.focus(), 350)

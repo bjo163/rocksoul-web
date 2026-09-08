@@ -10,7 +10,7 @@ const [main,readme,pkgRaw]=await Promise.all([
 const pkg=JSON.parse(pkgRaw)
 const failures=[]
 
-if(!main.includes('CinematicWebHero, MoonWitnessMark')) failures.push("CinematicWebHero import")
+if(!main.includes('CinematicWebHero, MoonWitnessMark, ROCKSOUL_CINEMATIC_WEB_HERO_SYNC')) failures.push("CinematicWebHero + sync import")
 if(!main.includes('<CinematicWebHero')) failures.push("CinematicWebHero consumption")
 if(!main.includes('id="top"')) failures.push("top anchor")
 if(!main.includes('archiveId="archive"')) failures.push("archive anchor")
