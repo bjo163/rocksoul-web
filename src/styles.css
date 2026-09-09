@@ -90,3 +90,202 @@
     height: 180px;
   }
 }
+
+/* ==========================================================================
+   Cinematic Radar Loader & Visual Graph Network Flow
+   ========================================================================== */
+
+.case-state-loading {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 24px;
+  border: 1px solid var(--mw-border-default);
+  background: var(--mw-surface-raised);
+  margin-bottom: 20px;
+}
+
+.radar-spinner {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--mw-brand-crimson) 40%, transparent);
+  background: radial-gradient(circle, color-mix(in srgb, var(--mw-brand-crimson) 12%, transparent) 0%, transparent 70%);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.radar-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 270deg, color-mix(in srgb, var(--mw-brand-crimson) 45%, transparent) 360deg);
+  animation: radar-sweep 1.8s linear infinite;
+}
+
+.radar-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mw-brand-crimson);
+  box-shadow: 0 0 8px var(--mw-brand-crimson);
+  z-index: 2;
+}
+
+@keyframes radar-sweep {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.loading-text strong {
+  display: block;
+  font: 800 11px/1.3 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .12em;
+  color: var(--mw-text-primary);
+}
+
+.loading-text small {
+  display: block;
+  margin-top: 4px;
+  font: 700 9px/1.4 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .08em;
+  color: var(--mw-text-secondary);
+}
+
+/* Visual Graph Trail / Flow */
+.graph-visual-flow {
+  border: 1px solid var(--mw-border-default);
+  background: var(--mw-surface-page);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.flow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--mw-border-default);
+  margin-bottom: 14px;
+}
+
+.flow-header span {
+  font: 800 9px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .14em;
+  color: var(--mw-brand-crimson);
+}
+
+.flow-header small {
+  font: 700 8px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .1em;
+  color: var(--mw-text-secondary);
+}
+
+.flow-nodes {
+  display: grid;
+  gap: 10px;
+}
+
+.flow-connection {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(180px, 1.6fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--mw-border-default);
+  background: var(--mw-surface-raised);
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.flow-connection:hover,
+.flow-connection.active {
+  border-color: var(--mw-border-strong);
+  background: var(--mw-surface-panel);
+  box-shadow: inset 3px 0 0 var(--mw-brand-crimson);
+}
+
+.flow-endpoint {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.flow-endpoint .node-type {
+  font: 800 8px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .12em;
+  color: var(--mw-brand-crimson);
+}
+
+.flow-endpoint code {
+  font-size: 10px;
+  color: var(--mw-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flow-line-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.flow-relation-tag {
+  font: 700 8px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--mw-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flow-line {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: color-mix(in srgb, var(--mw-border-default) 90%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mw-brand-crimson);
+  transition: transform .2s ease;
+}
+
+.flow-connection:hover .flow-dot,
+.flow-connection.active .flow-dot {
+  transform: scale(1.5);
+  box-shadow: 0 0 8px var(--mw-brand-crimson);
+}
+
+.flow-status-tag {
+  font: 700 8px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .08em;
+  padding: 2px 6px;
+  border: 1px solid var(--mw-border-default);
+  background: var(--mw-surface-page);
+  color: var(--mw-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .flow-connection {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .flow-line {
+    display: none;
+  }
+}

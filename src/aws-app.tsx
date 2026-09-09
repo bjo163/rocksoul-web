@@ -168,6 +168,9 @@ function Overview() {
                 <Button variant="secondary" onClick={() => { window.location.hash = "legal" }}>
                   Legal boundary
                 </Button>
+                <a href="/" className="aws-observatory-link">
+                  ← Return to Observatory
+                </a>
               </div>
             </div>
           </div>

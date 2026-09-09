@@ -212,7 +212,18 @@ function CorrelationObservatory() {
         </div>
       ) : null}
 
-      {loading ? <div className="case-state" aria-live="polite">LOADING REVIEWED CORRELATION CASES…</div> : null}
+      {loading ? (
+        <div className="case-state-loading" aria-live="polite">
+          <div className="radar-spinner" aria-hidden="true">
+            <span className="radar-sweep" />
+            <span className="radar-dot" />
+          </div>
+          <div className="loading-text">
+            <strong>SCANNING CANONICAL GRAPH</strong>
+            <small>FETCHING VERIFIED RELATIONSHIPS & FRESHNESS TRACES…</small>
+          </div>
+        </div>
+      ) : null}
       {error ? <div className="case-state error" role="alert">CORRELATION SERVICE UNAVAILABLE — {error}</div> : null}
       {!loading && cases.length === 0 ? <div className="case-state">NO REVIEWED CASES MATCH THIS SEARCH.</div> : null}
 
@@ -247,6 +258,43 @@ function CorrelationObservatory() {
                   <div><span>EDGES</span><strong>{graph.edges.length.toString().padStart(2, "0")}</strong></div>
                   <div><span>STATUS TYPES</span><strong>{current.epistemic_statuses.length.toString().padStart(2, "0")}</strong></div>
                 </div>
+
+                {graph.edges.length > 0 ? (
+                  <div className="graph-visual-flow" aria-label="Visual graph network flow">
+                    <div className="flow-header">
+                      <span>VERIFIED GRAPH TRAIL</span>
+                      <small>{graph.nodes.length} NODES · {graph.edges.length} RELATIONS</small>
+                    </div>
+                    <div className="flow-nodes">
+                      {graph.edges.map((edge) => (
+                        <div
+                          key={`flow-${edge.id}`}
+                          className={`flow-connection ${selectedEdge === edge.id ? "active" : ""}`}
+                          onClick={() => setSelectedEdge(selectedEdge === edge.id ? null : edge.id)}
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`Inspect connection ${edge.source} to ${edge.target}`}
+                        >
+                          <div className="flow-endpoint">
+                            <span className="node-type">{edge.source.split(":")[0]?.toUpperCase() ?? "NODE"}</span>
+                            <code>{edge.source.split(":")[1] ?? edge.source}</code>
+                          </div>
+                          <div className="flow-line-wrap">
+                            <span className="flow-relation-tag">{edge.relation_type.replaceAll("_", " ")}</span>
+                            <div className="flow-line">
+                              <span className="flow-dot" />
+                            </div>
+                            <span className="flow-status-tag">{statusLabel[edge.epistemic_status]}</span>
+                          </div>
+                          <div className="flow-endpoint">
+                            <span className="node-type">{edge.target.split(":")[0]?.toUpperCase() ?? "NODE"}</span>
+                            <code>{edge.target.split(":")[1] ?? edge.target}</code>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
 
                 <div className="edge-list">
                   {graph.edges.map((edge) => (

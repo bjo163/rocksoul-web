@@ -220,8 +220,30 @@ html.aws-surface body {
 .aws-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   margin-top: 20px;
+}
+
+.aws-observatory-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--mw-border-default);
+  background: var(--mw-surface-raised);
+  color: var(--mw-text-secondary);
+  font: 700 11px/1 "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all .2s ease;
+}
+
+.aws-observatory-link:hover {
+  border-color: var(--mw-brand-crimson);
+  color: var(--mw-brand-crimson);
+  background: var(--mw-surface-panel);
 }
 
 .aws-case-form {

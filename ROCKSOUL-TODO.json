@@ -5,10 +5,17 @@
     {
       "id": "WEB-001",
       "title": "Maintain repository control contract and local TODO",
-      "status": "NOT_STARTED",
+      "status": "VERIFIED",
       "scope": "repository",
       "github_issue": "https://github.com/bjo163/rocksoul-web/issues/11",
-      "evidence": []
+      "evidence": [
+        "node scripts/validate-rocksoul-contract.mjs: PASS: rocksoul-web contract; tasks=1",
+        "pnpm run audit:ui-hero: PASS",
+        "pnpm run audit:aws-surface: PASS",
+        "pnpm run typecheck: PASS",
+        "pnpm run build: PASS",
+        "verified_at=2026-09-10"
+      ]
     }
   ]
 }
