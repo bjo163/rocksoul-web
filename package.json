@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
-    "ci": "npm run audit:ui-hero && npm run audit:aws-surface && npm run typecheck && npm run build",
+    "ci": "pnpm run audit:ui-hero && pnpm run audit:aws-surface && pnpm run typecheck && pnpm run build",
     "audit:ui-hero": "node scripts/ui-hero-audit.mjs",
     "audit:aws-surface": "node scripts/aws-surface-audit.mjs"
   },
@@ -25,7 +25,7 @@
   },
   "engines": {
     "node": ">=22",
-    "npm": ">=11.6.0"
+    "pnpm": ">=10.0.0"
   },
-  "packageManager": "npm@11.6.0"
+  "packageManager": "pnpm@10.5.2"
 }

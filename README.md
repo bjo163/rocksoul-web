@@ -158,9 +158,9 @@ Without an override, requests stay same-origin.
 ## Develop
 
 ```bash
-npm install
-npm run dev
-npm run ci
+pnpm install
+pnpm run dev
+pnpm run ci
 ```
 
 Node **22+** is required.
