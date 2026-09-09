@@ -17,6 +17,16 @@ export default defineConfig({
       "/api/v1/correlation": {
         target: process.env.CORRELATION_API_URL ?? "http://127.0.0.1:8787",
         changeOrigin: true,
+        configure(proxy) {
+          proxy.on("error", (_err, _req, res) => {
+            // Silence noisy ECONNREFUSED terminal logs when correlation backend is offline;
+            // Frontend correlation-api.ts handles this gracefully via fallback.
+            if ("writeHead" in res && typeof res.writeHead === "function" && !res.headersSent) {
+              res.writeHead(502, { "Content-Type": "application/json" })
+              res.end(JSON.stringify({ error: "Backend service offline, using fallback" }))
+            }
+          })
+        },
       },
     },
   },
