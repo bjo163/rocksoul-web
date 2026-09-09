@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
-    "ci": "pnpm run audit:ui-hero && pnpm run audit:aws-surface && pnpm run typecheck && pnpm run build",
+    "ci": "pnpm run validate:contract && pnpm run audit:ui-hero && pnpm run audit:aws-surface && pnpm run typecheck && pnpm run build",
+    "validate:contract": "node scripts/validate-rocksoul-contract.mjs",
     "audit:ui-hero": "node scripts/ui-hero-audit.mjs",
     "audit:aws-surface": "node scripts/aws-surface-audit.mjs"
   },

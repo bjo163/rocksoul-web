@@ -165,6 +165,23 @@ pnpm run ci
 
 Node **22+** is required.
 
+### Local Docker
+
+Run the containerized application locally with Docker Compose:
+
+```bash
+docker compose up --build -d
+```
+
+The app will be served via Nginx at `http://localhost:8080` (healthcheck at `/healthz`).
+
+### Environment Variables
+
+Copy `.env.example` to `.env` to configure optional runtime backends:
+
+- `VITE_AWS_API_URL`: points to the live legal-intelligence API (default: degraded UI mode).
+- `VITE_CORRELATION_API_URL`: points to the correlation graph API (default: fallback corpus from `rocksoul-correlation/main`).
+
 ## Branch contract
 
 ```text
