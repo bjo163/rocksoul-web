@@ -206,7 +206,7 @@ function CorrelationObservatory() {
 
       <form className="case-search" onSubmit={submitSearch} role="search">
         <label htmlFor="correlation-search" className="sr-only">Search reviewed correlation cases</label>
-        <SearchInput id="correlation-search" value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search reviewed cases…" />
+        <SearchInput id="correlation-search" aria-label="Search reviewed correlation cases" value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search reviewed cases…" />
         <Button type="submit">SEARCH EVIDENCE</Button>
       </form>
 

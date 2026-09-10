@@ -7,7 +7,7 @@ test.describe("ROCKSOUL web surfaces", () => {
     await page.waitForTimeout(3000)
     await expect(page).toHaveScreenshot("public-observatory.png", { animations: "disabled", maxDiffPixelRatio: 0.02 })
 
-    const search = page.getByRole("textbox", { name: "Search reviewed correlation cases" })
+    const search = page.locator("#correlation-search")
     await search.fill("Jerusalem")
     await page.getByRole("button", { name: "SEARCH EVIDENCE" }).click()
     await expect(page.getByRole("button", { name: /Jerusalem \/ Second Temple destruction/ })).toBeVisible()
