@@ -2,6 +2,8 @@ import { defineConfig, type Plugin } from "vite"
 import react from "@vitejs/plugin-react"
 import { ROCKSOUL_GITHUB_RAW_ORIGIN } from "@rocksoul/ui"
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 const moonWitnessNetworkHints = (): Plugin => ({
   name: "moonwitness-network-hints",
   transformIndexHtml(html) {
@@ -10,17 +12,19 @@ const moonWitnessNetworkHints = (): Plugin => ({
 })
 
 export default defineConfig({
-  plugins: [react(), moonWitnessNetworkHints()],
+  plugins: [react(), moonWitnessNetworkHints(), cloudflare()],
   server: {
     port: 5173,
     proxy: {
+      "/public": {
+        target: process.env.CORRELATION_API_URL ?? "http://127.0.0.1:8787",
+        changeOrigin: true,
+      },
       "/api/v1/correlation": {
         target: process.env.CORRELATION_API_URL ?? "http://127.0.0.1:8787",
         changeOrigin: true,
         configure(proxy) {
           proxy.on("error", (_err, _req, res) => {
-            // Silence noisy ECONNREFUSED terminal logs when correlation backend is offline;
-            // Frontend correlation-api.ts handles this gracefully via fallback.
             if ("writeHead" in res && typeof res.writeHead === "function" && !res.headersSent) {
               res.writeHead(502, { "Content-Type": "application/json" })
               res.end(JSON.stringify({ error: "Backend service offline, using fallback" }))

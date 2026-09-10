@@ -1,11 +1,13 @@
+import { Button } from "@rocksoul/ui/components/ui/button"
+import { Input } from "@rocksoul/ui/components/ui/input"
+import { Field, FieldLabel, FieldDescription } from "@rocksoul/ui/components/ui/field"
+import { Spinner } from "@rocksoul/ui/components/ui/spinner"
 import { useEffect, useMemo, useState, type FormEvent } from "react"
 import {
   ApplicationShell,
   AWSBoundary,
   AWSLegalScreen,
-  Badge,
-  Button,
-  Input,
+  StatusBadge,
   LegalStatus,
   MOONWITNESS_STABLE_REPOSITORY_BASE,
   MoonWitnessAssetImage,
@@ -162,7 +164,7 @@ function Overview() {
             <div>
               <div className="aws-rule">LEGAL TEXT ≠ APPLICABLE LAW</div>
               <div className="aws-actions">
-                <Button onClick={() => { window.location.hash = "case" }} trailing="→">
+                <Button onClick={() => { window.location.hash = "case" }}>
                   Inspect a case
                 </Button>
                 <Button variant="secondary" onClick={() => { window.location.hash = "legal" }}>
@@ -269,9 +271,9 @@ function Overview() {
               <div className="aws-route" key={method + path}>
                 <strong>{method}</strong>
                 <code>{path}</code>
-                <Badge variant={auth === "Authenticated" ? "neutral" : auth === "COMMAND" ? "contested" : "info"}>
+                <StatusBadge variant={auth === "Authenticated" ? "neutral" : auth === "COMMAND" ? "contested" : "info"}>
                   {auth}
-                </Badge>
+                </StatusBadge>
               </div>
             ))}
           </div>
@@ -331,15 +333,19 @@ function CaseLookup() {
           </div>
 
           <form className="aws-case-form" onSubmit={submit}>
+            <Field>
+              <FieldLabel htmlFor="aws-case-id">Case ID</FieldLabel>
             <Input
-              label="Canonical AWS case ID"
-              variant="search"
+              id="aws-case-id"
+              type="search"
+              aria-describedby="aws-case-help"
               placeholder="LCASE-…"
               value={caseId}
               onChange={(event) => setCaseId(event.currentTarget.value)}
-              helper={API_BASE ? "Uses the authenticated AWS query API." : "Configure VITE_AWS_API_URL to enable live lookup."}
             />
-            <Button type="submit" loading={loading}>Load case + graph</Button>
+              <FieldDescription id="aws-case-help">{API_BASE ? "Uses the authenticated AWS query API." : "Live lookup is unavailable."}</FieldDescription>
+            </Field>
+            <Button type="submit" disabled={loading} aria-busy={loading}>{loading && <Spinner />}Load case + graph</Button>
           </form>
 
           {!API_BASE ? (
@@ -418,7 +424,7 @@ function Sources() {
             </p>
           </div>
           <div className="aws-actions">
-            <Button onClick={load} loading={loading}>Load source inventory</Button>
+            <Button onClick={load} disabled={loading} aria-busy={loading}>{loading && <Spinner />}Load source inventory</Button>
           </div>
           {!API_BASE ? (
             <div className="aws-note">
@@ -440,7 +446,7 @@ function Sources() {
                   <article className="aws-source-row" key={String(id)}>
                     <div className="aws-source-row-top">
                       <strong>{String(id)}</strong>
-                      <Badge variant="verified">SOURCE LINKED</Badge>
+                      <StatusBadge variant="verified">SOURCE LINKED</StatusBadge>
                     </div>
                     <pre>{JSON.stringify(source, null, 2)}</pre>
                   </article>
@@ -534,7 +540,7 @@ function Observability() {
             </div>
           </div>
           <div className="aws-actions">
-            <Button onClick={load} loading={loading}>Load observability snapshot</Button>
+            <Button onClick={load} disabled={loading} aria-busy={loading}>{loading && <Spinner />}Load observability snapshot</Button>
           </div>
           {!API_BASE ? (
             <div className="aws-note">

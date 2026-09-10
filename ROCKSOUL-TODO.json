@@ -1,13 +1,38 @@
 {
-  "schema": "rocksoul.todo.v1",
   "repository_id": "rocksoul-web",
+  "schema": "rocksoul.todo.v1",
   "tasks": [
     {
-      "id": "WEB-001",
-      "title": "Maintain repository control contract and local TODO",
-      "status": "VERIFIED",
+      "acceptance_criteria": [
+        "Preserve Git HEAD and all tracked file hashes across relocation",
+        "Update workspace and registry paths",
+        "Pass Web CI checks from the new path"
+      ],
+      "affected_paths": [
+        "ROCKSOUL/apps/web",
+        "ROCKSOUL/rocksoul.code-workspace",
+        "LOCAL-FORGE.json",
+        "control/rocksoul-ecosystem/registry"
+      ],
+      "depends_on": [],
+      "evidence": [
+        "Moved rocksoul-web to ROCKSOUL/apps/web; HEAD 2e083a9c8d360a60b7460cc484fe9af3c63a62aa preserved; 27/27 tracked SHA256 hashes matched before metadata edits; pnpm install --frozen-lockfile --force PASS; pnpm run ci PASS; 17 workspace folders resolve; runtime doctor PASS; evidence ROCKSOUL/WEB-RELOCATION.md"
+      ],
+      "evidence_required": [
+        "Before/after Git and SHA256 comparison",
+        "pnpm run ci",
+        "Runtime doctor and task lookup"
+      ],
+      "id": "WEB-002",
+      "owner": "rocksoul-web",
+      "phase": "WORKSPACE_RELOCATION",
+      "priority": "HIGH",
+      "risk": "MEDIUM",
       "scope": "repository",
-      "github_issue": "https://github.com/bjo163/rocksoul-web/issues/11",
+      "status": "VERIFIED",
+      "title": "Relocate Web to ROCKSOUL/apps/web and verify workspace integration"
+    },
+    {
       "evidence": [
         "node scripts/validate-rocksoul-contract.mjs: PASS: rocksoul-web contract; tasks=1",
         "pnpm run audit:ui-hero: PASS",
@@ -15,6 +40,48 @@
         "pnpm run typecheck: PASS",
         "pnpm run build: PASS",
         "verified_at=2026-09-10"
+      ],
+      "github_issue": "https://github.com/bjo163/rocksoul-web/issues/11",
+      "id": "WEB-001",
+      "scope": "repository",
+      "status": "VERIFIED",
+      "title": "Maintain repository control contract and local TODO"
+    },
+    {
+      "scope": "repository",
+      "phase": "UI_FOUNDATIONS",
+      "priority": "HIGH",
+      "risk": "MEDIUM",
+      "status": "VERIFIED",
+      "acceptance_criteria": [
+        "Use standard component names and public UI imports",
+        "Classify overlaps and share primitive implementations through compatibility adapters",
+        "Verify UI tests and apps/web consumer behavior"
+      ],
+      "evidence": [
+        "UI typecheck PASS; 18 unit-test files / 50 tests PASS; token and accessibility audits PASS; library build, package audit and consumer smoke PASS.",
+        "UI consumer audit PASS: 63 unique TSX modules, 16 classified compatibility exports; no raw form controls or old primitive imports in apps/web.",
+        "apps/web pnpm run ci PASS; local installed UI dist/index.js matches current package build.",
+        "Agent Browser: desktop/mobile public page and /aws render without JavaScript errors; theme toggles, search focus and filtering, case selection, and AWS form tested. Mobile viewport and scroll width both 390px after correcting wrapped list buttons.",
+        "AWS live lookup unavailable without its configured API; live AWS data retrieval was not certified. Screenshots: packages/ui/test-results/web-primitives-mobile.png and web-primitives-desktop.png."
+      ],
+      "evidence_required": [
+        "Typecheck, unit tests and public exports",
+        "Consumer CI and desktop/mobile browser checks"
+      ],
+      "completed_at": "2026-09-10T03:48:17.251Z",
+      "id": "WEB-UI-CONSUMER-001",
+      "title": "Use standard shared UI components in the first web consumer",
+      "owner": "rocksoul-web",
+      "depends_on": [
+        "UI-CONSUMER-001"
+      ],
+      "affected_paths": [
+        "src/main.tsx",
+        "src/aws-app.tsx",
+        "scripts",
+        "package.json",
+        "pnpm-lock.yaml"
       ]
     }
   ]

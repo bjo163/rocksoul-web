@@ -28,7 +28,13 @@ try{
   await access(path.join(root,"src","hero-assets.ts"))
   failures.push("legacy src/hero-assets.ts still exists")
 }catch{}
-if(!/^github:bjo163\/rocksoul-ui#[0-9a-f]{40}$/.test(pkg.dependencies?.["@rocksoul/ui"] ?? "")) failures.push("@rocksoul/ui immutable dependency")
+const uiDependency = (pkg.dependencies?.["@rocksoul/ui"] ?? "").replaceAll("\\", "/")
+if (uiDependency === "file:../../packages/ui") {
+  const localPackage = JSON.parse(await readFile(path.resolve(root, "../../packages/ui/package.json"), "utf8"))
+  if (localPackage.name !== "@rocksoul/ui") failures.push("local UI package identity")
+} else if (!/^github:bjo163\/rocksoul-ui#[0-9a-f]{40}$/.test(uiDependency)) {
+  failures.push("@rocksoul/ui must use the local workspace package or a pinned Git revision")
+}
 if(!readme.includes("public hero is **owned by `@rocksoul/ui`**")) failures.push("README ownership contract")
 if(!main.includes("PublicResearchVisuals") || !main.includes("ResearchDomainOwnershipMap")) failures.push("shared public research visual grammar")
 for(const visual of ["correlation-network","provenance-chain","edge-unresolved"]) {

@@ -7,22 +7,29 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc --noEmit",
-    "ci": "pnpm run validate:contract && pnpm run audit:ui-hero && pnpm run audit:aws-surface && pnpm run typecheck && pnpm run build",
+    "ci": "pnpm run validate:contract && pnpm run audit:ui-hero && pnpm run audit:aws-surface && pnpm run audit:ui && pnpm run typecheck && pnpm run build && pnpm run test:visual",
     "validate:contract": "node scripts/validate-rocksoul-contract.mjs",
     "audit:ui-hero": "node scripts/ui-hero-audit.mjs",
-    "audit:aws-surface": "node scripts/aws-surface-audit.mjs"
+    "audit:aws-surface": "node scripts/aws-surface-audit.mjs",
+    "deploy": "pnpm run build && wrangler deploy",
+    "preview": "pnpm run build && wrangler dev",
+    "audit:ui": "npm --prefix ../../packages/ui run audit:consumer && npm --prefix ../../packages/ui run audit:adapters"
+    ,"test:visual": "playwright test"
   },
   "dependencies": {
-    "@rocksoul/ui": "github:bjo163/rocksoul-ui#6a98ce0d5f5be60d4744f073837cd754639ea044",
+    "@rocksoul/ui": "file:..\\..\\packages\\ui",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.6",
+    "@playwright/test": "^1.63.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "^5.8.3",
-    "vite": "^8.2.2"
+    "vite": "^8.2.2",
+    "wrangler": "^4.130.0"
   },
   "engines": {
     "node": ">=22",

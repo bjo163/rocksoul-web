@@ -257,7 +257,7 @@ async function get<T>(path: string, fallback: () => Promise<T>): Promise<T> {
 export async function fetchCases(q = "") {
   const query = q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ""
   const response = await get<{ data: CaseSummary[] }>(
-    `/api/v1/correlation/cases${query}`,
+    `/public/correlation/cases${query}`,
     async () => ({ data: await fallbackCases(q) }),
   )
   return response.data
@@ -266,7 +266,7 @@ export async function fetchCases(q = "") {
 export async function fetchGraph(caseId?: string) {
   const query = caseId ? `?case_id=${encodeURIComponent(caseId)}` : ""
   const response = await get<{ data: CorrelationGraph }>(
-    `/api/v1/correlation/graph${query}`,
+    `/public/correlation/graph${query}`,
     async () => ({ data: await fallbackGraph(caseId) }),
   )
   return response.data
@@ -274,7 +274,7 @@ export async function fetchGraph(caseId?: string) {
 
 export async function fetchEdgeProvenance(edgeId: string) {
   const response = await get<{ data: EdgeProvenance }>(
-    `/api/v1/correlation/edges/${encodeURIComponent(edgeId)}/provenance`,
+    `/public/correlation/edges/${encodeURIComponent(edgeId)}/provenance`,
     async () => ({ data: await fallbackProvenance(edgeId) }),
   )
   return response.data
@@ -282,7 +282,7 @@ export async function fetchEdgeProvenance(edgeId: string) {
 
 export async function fetchFreshness() {
   const response = await get<{ data: FreshnessReport }>(
-    "/api/v1/correlation/freshness",
+    "/public/correlation/freshness",
     async () => ({ data: await fallbackFreshness() }),
   )
   return response.data

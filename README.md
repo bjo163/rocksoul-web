@@ -208,3 +208,11 @@ dev  ── verified promotion ──> main
 ## Shared visual research grammar
 
 The Public Observatory consumes its cinematic hero, research-domain ownership map, correlation network, provenance chain, unresolved-edge semantics, and product icons from the pinned `@rocksoul/ui` contract. The web application does not carry a parallel asset revision or duplicate those renderers. The UI dependency is pinned to an immutable commit; Vite derives raw-host network hints from the shared ecosystem-link contract.
+
+## Shared UI components
+
+This app consumes the local `@rocksoul/ui` package from `../../packages/ui`. Import generic controls from `@rocksoul/ui/components/ui/<name>` and domain components such as `StatusBadge` from the package root. Do not copy primitive source into this app.
+
+Build the UI package first, then refresh the local dependency with `pnpm update @rocksoul/ui --ignore-scripts`. `pnpm run audit:ui` verifies consumer imports and component ownership; it also runs in `pnpm run ci`. Component coverage and compatibility are documented in `packages/ui/docs/component-usage.md`.
+
+Visual baselines live in `tests/browser/visual-regression.spec.ts-snapshots`. Run `pnpm run test:visual` after intentional visual changes and review the four desktop/mobile snapshots before updating them.

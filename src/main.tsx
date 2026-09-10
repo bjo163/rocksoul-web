@@ -1,15 +1,19 @@
+import { Button } from "@rocksoul/ui/components/ui/button"
 import { StrictMode, useEffect, useMemo, useState, type FormEvent } from "react"
 import { createRoot } from "react-dom/client"
 import {
   CinematicWebHero,
   MoonWitnessMark,
   MoonWitnessRegistryAssetImage,
+  ObservatoryFooter,
   ResearchDomainOwnershipMap,
+  SearchInput,
   ROCKSOUL_CINEMATIC_WEB_HERO_SYNC,
 } from "@rocksoul/ui"
 import "@rocksoul/ui/styles.css"
 import "./styles.css"
 import { AWSApp } from "./aws-app"
+
 import {
   fetchCases,
   fetchEdgeProvenance,
@@ -44,9 +48,9 @@ function PublicHeader({ onSearch }: { onSearch: () => void }) {
         <a href="/aws">LAW / AWS</a>
         <a href="#about">ABOUT</a>
       </nav>
-      <button className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
-        <MoonWitnessRegistryAssetImage pack="product-icons" assetId="search" alt="" aria-hidden="true" />
-      </button>
+      <Button variant="ghost" size="icon" className="icon-control search-control" type="button" onClick={onSearch} aria-label="Search reviewed cases">
+        <MoonWitnessRegistryAssetImage pack="product-icons" assetId="search" alt="" aria-hidden="true" className="size-5" />
+      </Button>
       <span className="live-archive"><i aria-hidden="true" /> LIVE ARCHIVE</span>
     </header>
   )
@@ -64,14 +68,16 @@ function PublicCinematicHero({ theme, onToggleTheme }: { theme: "dark" | "light"
       }
       footerRight={<>A MORE CURIOUS TOMORROW</>}
       footerMark={
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           className="phase-toggle"
           type="button"
           onClick={onToggleTheme}
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
         >
           <b aria-hidden="true">{theme === "dark" ? "◕◕◯" : "◯◕◕"}</b>
-        </button>
+        </Button>
       }
     />
   )
@@ -200,8 +206,8 @@ function CorrelationObservatory() {
 
       <form className="case-search" onSubmit={submitSearch} role="search">
         <label htmlFor="correlation-search" className="sr-only">Search reviewed correlation cases</label>
-        <input id="correlation-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search reviewed cases…" />
-        <button type="submit">SEARCH EVIDENCE</button>
+        <SearchInput id="correlation-search" value={query} onChange={(event) => setQuery(event.target.value)} onClear={() => setQuery("")} placeholder="Search reviewed cases…" />
+        <Button type="submit">SEARCH EVIDENCE</Button>
       </form>
 
       {freshness ? (
@@ -232,10 +238,10 @@ function CorrelationObservatory() {
           <aside className="case-index-list" aria-label="Reviewed correlation cases">
             <div className="case-list-heading"><span>REVIEWED CASES</span><strong>{cases.length.toString().padStart(2, "0")}</strong></div>
             {cases.map((item) => (
-              <button key={item.case_id} className={selected === item.case_id ? "active" : ""} onClick={() => setSelected(item.case_id)}>
+              <Button key={item.case_id} variant="ghost" className={`h-auto min-w-0 whitespace-normal font-sans normal-case tracking-normal ${selected === item.case_id ? "active" : ""}`} aria-pressed={selected === item.case_id} onClick={() => setSelected(item.case_id)}>
                 <span>{item.title}</span>
                 <small>{item.domains.join(" × ")} · {item.edge_count} EDGES</small>
-              </button>
+              </Button>
             ))}
           </aside>
 
@@ -271,6 +277,12 @@ function CorrelationObservatory() {
                           key={`flow-${edge.id}`}
                           className={`flow-connection ${selectedEdge === edge.id ? "active" : ""}`}
                           onClick={() => setSelectedEdge(selectedEdge === edge.id ? null : edge.id)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter" || event.key === " ") {
+                              event.preventDefault()
+                              setSelectedEdge(selectedEdge === edge.id ? null : edge.id)
+                            }
+                          }}
                           role="button"
                           tabIndex={0}
                           aria-label={`Inspect connection ${edge.source} to ${edge.target}`}
@@ -322,9 +334,9 @@ function CorrelationObservatory() {
                           {edge.alternative_explanations.length ? edge.alternative_explanations.map((item) => <p key={item}>{item}</p>) : <p>None recorded.</p>}
                         </section>
                       </div>
-                      <button className="trace-button" onClick={() => setSelectedEdge(selectedEdge === edge.id ? null : edge.id)}>
+                      <Button className="trace-button" onClick={() => setSelectedEdge(selectedEdge === edge.id ? null : edge.id)}>
                         {selectedEdge === edge.id ? "HIDE PROVENANCE" : "TRACE CANONICAL OWNERS"}
-                      </button>
+                      </Button>
 
                       {selectedEdge === edge.id && provenance ? (
                         <div className="provenance-panel">
@@ -347,19 +359,6 @@ function CorrelationObservatory() {
         </div>
       ) : null}
     </section>
-  )
-}
-
-function AboutFooter() {
-  return (
-    <footer id="about" className="about-footer">
-      <div className="footer-brand">
-        <MoonWitnessMark className="footer-mark" />
-        <div><strong>MOONWITNESS</strong><span>INDEPENDENT OBSERVATORY</span></div>
-      </div>
-      <p>MoonWitness watches. Rocksoul follows. The record connects. The law draws the line. The trail stays inspectable.</p>
-      <div className="footer-meta"><span>ROCKSOUL / PUBLIC WEB</span><span>TRUTH LEAVES A TRACE.</span></div>
-    </footer>
   )
 }
 
@@ -386,10 +385,11 @@ function App() {
         <PublicResearchVisuals />
         <CorrelationObservatory />
       </main>
-      <AboutFooter />
+      <ObservatoryFooter domain="moonwitness.biz.id" />
     </div>
   )
 }
+
 
 const isAwsSurface = window.location.pathname === "/aws" || window.location.pathname.startsWith("/aws/")
 if (isAwsSurface) document.documentElement.classList.add("aws-surface")

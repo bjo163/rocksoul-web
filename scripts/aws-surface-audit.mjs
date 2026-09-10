@@ -2,13 +2,13 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 
 const root = process.cwd()
-const [aws, main, vercelRaw] = await Promise.all([
+const [aws, main, hostingRaw] = await Promise.all([
   readFile(path.join(root, "src", "aws-app.tsx"), "utf8"),
   readFile(path.join(root, "src", "main.tsx"), "utf8"),
-  readFile(path.join(root, "vercel.json"), "utf8"),
+  readFile(path.join(root, "wrangler.jsonc"), "utf8"),
 ])
 
-const vercel = JSON.parse(vercelRaw)
+const hosting = JSON.parse(hostingRaw)
 const failures = []
 
 for (const symbol of [
@@ -36,9 +36,8 @@ if (!aws.includes("VITE_AWS_API_URL")) failures.push("VITE_AWS_API_URL runtime b
 if (!aws.includes('credentials: "include"')) failures.push("authenticated AWS API credentials boundary")
 if (!main.includes('window.location.pathname === "/aws"')) failures.push("/aws application entry")
 
-const rewrites = Array.isArray(vercel.rewrites) ? vercel.rewrites : []
-if (!rewrites.some((entry) => entry?.source === "/aws" && entry?.destination === "/index.html")) {
-  failures.push("Vercel /aws SPA rewrite")
+if (hosting.assets?.not_found_handling !== "single-page-application") {
+  failures.push("Cloudflare /aws SPA fallback")
 }
 
 if (failures.length) {
