@@ -24,7 +24,7 @@ import {
   type EdgeProvenance,
   type EpistemicStatus,
   type FreshnessReport,
-} from "./correlation-api"
+} from "./features/correlation/api"
 
 const statusLabel: Record<EpistemicStatus, string> = {
   SUPPORTED: "Supported",
@@ -136,7 +136,7 @@ function CorrelationObservatory() {
   const [graph, setGraph] = useState<CorrelationGraph>({ nodes: [], edges: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get("q") ?? "")
   const [freshness, setFreshness] = useState<FreshnessReport | null>(null)
   const [selectedEdge, setSelectedEdge] = useState<string | null>(null)
   const [provenance, setProvenance] = useState<EdgeProvenance | null>(null)
@@ -191,6 +191,10 @@ function CorrelationObservatory() {
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault()
+    const url = new URL(window.location.href)
+    if (query.trim()) url.searchParams.set("q", query.trim())
+    else url.searchParams.delete("q")
+    window.history.replaceState({}, "", url)
     void loadCases(query)
   }
 
